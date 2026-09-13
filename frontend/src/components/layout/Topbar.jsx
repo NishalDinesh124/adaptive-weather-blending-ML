@@ -1,7 +1,7 @@
 import { MapPin } from "lucide-react";
 import StatusDot from "../common/StatusDot";
 
-function Topbar({ title, description }) {
+function Topbar({ title, description, badge }) {
   return (
     <header className="topbar">
       <div className="topbar-left">
@@ -10,8 +10,10 @@ function Topbar({ title, description }) {
       </div>
 
       <div className="topbar-right">
+        {badge && badge}
+
         <div className="topbar-location">
-          <MapPin size={12} />
+          <MapPin size={11} />
           Thiruvananthapuram, Kerala
         </div>
 

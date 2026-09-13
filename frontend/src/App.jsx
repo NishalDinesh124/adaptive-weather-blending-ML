@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Zap, ShieldAlert } from "lucide-react";
 
 import Sidebar from "./components/layout/Sidebar";
 import Topbar from "./components/layout/TopBar";
@@ -29,11 +30,17 @@ const pages = {
     title: "AI Forecast Fusion",
     description: "Dynamic multi-model forecast blending",
     component: ForecastFusion,
+    badge: (
+      <div className="live-badge">
+        <Zap size={12} />
+        Adaptive Mode
+      </div>
+    ),
   },
 
   performance: {
     title: "Model Performance",
-    description: "Forecast accuracy and comparison",
+    description: "Forecast accuracy against ERA5 reference data",
     component: ModelPerformance,
   },
 
@@ -45,8 +52,14 @@ const pages = {
 
   extreme: {
     title: "Extreme Weather",
-    description: "Extreme weather detection and guidance",
+    description: "Risk indicators from the blended forecast",
     component: ExtremeWeather,
+    badge: (
+      <div className="risk-status">
+        <ShieldAlert size={13} />
+        Monitoring
+      </div>
+    ),
   },
 };
 
@@ -67,6 +80,7 @@ function App() {
         <Topbar
           title={page.title}
           description={page.description}
+          badge={page.badge}
         />
 
         <div className="content">

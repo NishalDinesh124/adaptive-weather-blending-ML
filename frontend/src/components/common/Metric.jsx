@@ -4,13 +4,9 @@ function Metric({ icon: Icon, label, value, confidence }) {
       <div className="metric-icon">
         <Icon size={16} />
       </div>
-
       <span>{label}</span>
       <strong>{value}</strong>
-
-      {confidence && (
-        <small>Confidence {confidence}</small>
-      )}
+      {confidence && <small>Confidence {confidence}</small>}
     </div>
   );
 }

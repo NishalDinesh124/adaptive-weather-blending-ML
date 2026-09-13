@@ -3,7 +3,6 @@ import {
   CloudRain,
   Wind,
   Thermometer,
-  ShieldAlert,
 } from "lucide-react";
 import Card from "../components/common/Card";
 
@@ -28,7 +27,7 @@ const risks = [
     title: "Heat Risk",
     level: "LOW",
     levelClass: "low",
-    value: "29.4°C",
+    value: "29.4°",
     description: "Temperature remains within normal range.",
     icon: Thermometer,
   },
@@ -37,27 +36,14 @@ const risks = [
 function ExtremeWeather() {
   return (
     <div className="page">
-      <div className="page-heading">
-        <div>
-          <h2>Extreme Weather Guidance</h2>
-          <p>Risk indicators derived from the blended forecast</p>
-        </div>
-
-        <div className="risk-status">
-          <ShieldAlert size={15} />
-          Monitoring
-        </div>
-      </div>
-
       <div className="risk-grid">
         {risks.map((risk) => {
           const Icon = risk.icon;
-
           return (
             <Card key={risk.title} className={`risk-card-glow ${risk.levelClass}`}>
               <div className="risk-card">
                 <div className={`risk-icon ${risk.levelClass}`}>
-                  <Icon size={22} />
+                  <Icon size={20} />
                 </div>
 
                 <div className="risk-card-header">
@@ -78,15 +64,12 @@ function ExtremeWeather() {
 
       <Card title="Extreme Weather Assessment">
         <div className="assessment">
-          <AlertTriangle size={24} />
-
+          <AlertTriangle size={22} />
           <div>
             <strong>Heavy rainfall requires attention</strong>
-
             <p>
-              The adaptive forecast currently indicates elevated
-              precipitation. Risk thresholds can be configured for
-              rainfall, wind and temperature extremes.
+              The adaptive forecast currently indicates elevated precipitation.
+              Risk thresholds can be configured for rainfall, wind and temperature extremes.
             </p>
           </div>
         </div>
@@ -98,12 +81,10 @@ function ExtremeWeather() {
             <span>Heavy Rain</span>
             <strong>&gt; 40 mm</strong>
           </div>
-
           <div>
             <span>Strong Wind</span>
             <strong>&gt; 40 km/h</strong>
           </div>
-
           <div>
             <span>Heat Risk</span>
             <strong>&gt; 35°C</strong>
