@@ -7,6 +7,7 @@ from xgboost import XGBRegressor
 
 from .features import (
     PRECIPITATION_FEATURE_COLUMNS,
+    TEMPERATURE_FEATURE_COLUMNS,
     build_precipitation_features,
     build_temperature_features,
 )
@@ -24,20 +25,6 @@ FORECAST_COLUMNS = {
     "aifs": "aifs_temp",
     "hgefs": "hgefs_temp",
 }
-
-FEATURE_COLUMNS = [
-    "hour",
-    "month",
-    "day_of_year",
-    "ifs_temp",
-    "gfs_temp",
-    "aifs_temp",
-    "hgefs_temp",
-    "temp_mean",
-    "temp_std",
-    "temp_min",
-    "temp_max",
-]
 
 EPSILON = 1e-6
 
@@ -58,6 +45,39 @@ PRECIP_MODEL_DIR = (
     / "saved"
     / "precipitation"
 )
+
+REQUIRED_FORECAST_COLUMNS = [
+    "time",
+    "ifs_temp",
+    "gfs_temp",
+    "aifs_temp",
+    "hgefs_temp",
+    "ifs_precip",
+    "gfs_precip",
+    "aifs_precip",
+    "hgefs_precip",
+]
+
+
+def validate_forecast_input(df: pd.DataFrame):
+    missing_columns = [
+        column
+        for column in REQUIRED_FORECAST_COLUMNS
+        if column not in df.columns
+    ]
+
+    if missing_columns:
+        raise ValueError(
+            f"Missing forecast columns: {missing_columns}"
+        )
+
+    if df.empty:
+        raise ValueError("Forecast data is empty.")
+
+    if df[REQUIRED_FORECAST_COLUMNS].isna().any().any():
+        raise ValueError(
+            "Forecast data contains missing values."
+        )
 
 # ==================================================
 # Load trained models
@@ -95,14 +115,14 @@ def generate_adaptive_temperature_forecast(df: pd.DataFrame):
 
     Lower predicted error -> higher weight.
     """
-
+    validate_forecast_input(df)
     models = load_temperature_models()
 
     # Build the exact same feature structure used during training.
     features = build_temperature_features(df)
 
     # MVP uses only the original non-rolling features.
-    X = features[FEATURE_COLUMNS].copy()
+    X = features[TEMPERATURE_FEATURE_COLUMNS].copy()
 
     predicted_errors = {}
 
@@ -204,7 +224,7 @@ def generate_precipitation_forecast(
     Generate a precipitation forecast using
     the trained XGBoost Tweedie model.
     """
-
+    validate_forecast_input(df)
     model = load_precipitation_model()
 
     # Build the exact same features used during training.

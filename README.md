@@ -465,25 +465,37 @@ The dashboard can eventually show:
 
 ## Current Status
 
-```text
 [✓] Project structure
 [✓] Python environment
-[✓] API test
+[✓] Multi-model forecast ingestion
 [✓] Historical forecast data
 [✓] ERA5 reference data
 [✓] Data cleaning/merging
 [✓] Individual model evaluation
-[ ] Equal-weight blending
-[ ] ML dynamic weighting
-[ ] Proper train/test evaluation
-[ ] Extreme-weather/risk layer
+[✓] Equal-weight baseline
+[✓] Adaptive temperature XGBoost
+[✓] Precipitation Tweedie XGBoost
+[✓] Chronological train/test evaluation
+[✓] Live hybrid forecast pipeline
 [ ] FastAPI backend
 [ ] React dashboard
+[ ] Deployment
 [ ] Final presentation
-```
 
-**Current immediate task:**
+## Current Stage
 
-> Build the equal-weight blend and compare it against IFS, GFS, AIFS, and HGEFS.
+The ML prototype and live forecast pipeline are complete.
 
-That gives us the baseline before we start ML.
+The current prototype:
+- fetches forecasts from four weather models
+- dynamically blends temperature forecasts using XGBoost-predicted model error
+- predicts precipitation using a Tweedie XGBoost model
+- compares against individual models and an equal-weight baseline
+- uses chronological train/test evaluation
+- produces a unified hybrid forecast output
+
+The remaining work is primarily product integration:
+- FastAPI endpoint
+- dashboard
+- deployment
+- final presentation
