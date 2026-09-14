@@ -373,6 +373,56 @@ def evaluate_precipitation():
             )
 
 
+def get_precipitation_performance():
+
+    df = load_data()
+
+    _, test_df = split_data(df)
+
+    actual = test_df["era5_precip"]
+
+    tweedie_result = generate_precipitation_forecast(
+        test_df
+    )
+
+    predictions = {}
+
+    for model_name in MODEL_NAMES:
+        predictions[model_name] = test_df[
+            FORECAST_COLUMNS[model_name]
+        ].to_numpy()
+
+    predictions["equal"] = (
+        test_df[
+            list(FORECAST_COLUMNS.values())
+        ]
+        .mean(axis=1)
+        .to_numpy()
+    )
+
+    predictions["tweedie"] = (
+        tweedie_result["hybrid_precip"]
+        .to_numpy()
+    )
+
+    performance = {}
+
+    for model_name, predicted in predictions.items():
+
+        mae, rmse = calculate_continuous_metrics(
+            actual,
+            predicted,
+        )
+
+        performance[model_name] = {
+            "mae": float(mae),
+            "rmse": float(rmse),
+        }
+
+    return performance
+
+
+
 
 
 # ==================================================

@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
+from evaluate_adaptive import get_temperature_performance
+from evaluate_precipitation import get_precipitation_performance
 from backend.ingestion.fetch_weather import fetch_all_models
 from backend.forecast.forecast_engine import generate_hybrid_forecast
 
@@ -50,3 +51,11 @@ def get_forecast():
     )
 
     return result
+
+@app.get("/performance")
+def get_performance():
+
+    return {
+        "temperature": get_temperature_performance(),
+        "precipitation": get_precipitation_performance(),
+    }

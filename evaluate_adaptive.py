@@ -124,3 +124,47 @@ weights = result[
 
 print("\nMaximum weight-sum error:")
 print(abs(weights.sum(axis=1) - 1).max())
+
+def get_temperature_performance():
+
+    df = pd.read_csv(
+        "data/processed/training_dataset.csv"
+    )
+
+    df["time"] = pd.to_datetime(df["time"])
+
+    split_index = int(len(df) * 0.8)
+    test_df = df.iloc[split_index:].copy()
+
+    result = generate_adaptive_temperature_forecast(test_df)
+
+    actual = test_df["era5_temp"]
+
+    predictions = {
+        "IFS": test_df["ifs_temp"],
+        "GFS": test_df["gfs_temp"],
+        "AIFS": test_df["aifs_temp"],
+        "HGEFS": test_df["hgefs_temp"],
+        "adaptive": result["hybrid_temp"],
+    }
+
+    performance = {}
+
+    for name, prediction in predictions.items():
+
+        mae = mean_absolute_error(
+            actual,
+            prediction,
+        )
+
+        rmse = mean_squared_error(
+            actual,
+            prediction,
+        ) ** 0.5
+
+        performance[name] = {
+            "mae": float(mae),
+            "rmse": float(rmse),
+        }
+
+    return performance

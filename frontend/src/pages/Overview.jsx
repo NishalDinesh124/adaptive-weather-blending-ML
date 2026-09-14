@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { CloudRain, Thermometer, Wind } from "lucide-react";
 
 import Card from "../components/common/Card";
@@ -8,6 +9,32 @@ import AlertsCard from "../components/overview/AlertsCard";
 import RiskMapPreview from "../components/overview/RiskMapPreview";
 
 function Overview() {
+  const [forecast, setForecast] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+  fetch(`${import.meta.env.VITE_API_URL}/forecast`)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to fetch forecast");
+      }
+
+      return response.json();
+    })
+    .then((data) => {
+      setForecast(data);
+      setLoading(false);
+    })
+    .catch((err) => {
+      console.error(err);
+      setError("Unable to load live forecast");
+      setLoading(false);
+    });
+}, []);
+
+  const firstForecast = forecast?.forecast?.[0];
+
   return (
     <>
       <section className="hero-grid">
@@ -19,12 +46,49 @@ function Overview() {
         <RiskMapPreview />
 
         <Card title="AI Blended Forecast">
-          {/* Metrics are flush — no wrapper padding */}
           <div className="forecast-grid">
-            <Metric icon={CloudRain}   label="Precipitation" value="42 mm"  confidence="91%" />
-            <Metric icon={Thermometer} label="Temperature"   value="29.4°"  confidence="94%" />
-            <Metric icon={Wind}        label="Wind"          value="18 km/h" confidence="88%" />
+
+            <Metric
+              icon={CloudRain}
+              label="Precipitation"
+              value={
+                loading
+                  ? "Loading..."
+                  : error
+                    ? "--"
+                    : `${firstForecast.precipitation.hybrid.toFixed(2)} mm`
+              }
+              confidence="AI"
+            />
+
+            <Metric
+              icon={Thermometer}
+              label="Temperature"
+              value={
+                loading
+                  ? "Loading..."
+                  : error
+                    ? "--"
+                    : `${firstForecast.temperature.hybrid.toFixed(1)}°`
+              }
+              confidence="AI"
+            />
+
+            <Metric
+              icon={Wind}
+              label="Wind"
+              value="--"
+              confidence="Live"
+            />
+
           </div>
+
+          {error && (
+            <p className="error-message">
+              {error}
+            </p>
+          )}
+
         </Card>
       </section>
     </>
