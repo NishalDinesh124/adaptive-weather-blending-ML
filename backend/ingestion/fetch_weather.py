@@ -39,9 +39,6 @@ def fetch_model_forecast(
 ):
     """
     Fetch forecast data for one model from Open-Meteo.
-
-    Returns a DataFrame using the project's canonical
-    forecast column names.
     """
 
     config = MODEL_CONFIGS[model_name]
@@ -58,50 +55,66 @@ def fetch_model_forecast(
         "timezone": "Asia/Kolkata",
     }
 
-    # Add model-specific parameters.
-    params.update(
-        config.get("params", {})
-    )
+    # Add model-specific parameters
+    params.update(config.get("params", {}))
+
+    # --------------------------------------------------
+    # API request
+    # --------------------------------------------------
 
     try:
-    response = requests.get(
-        url,
-        params=params,
-        timeout=30,
-    )
-    response.raise_for_status()
-except requests.RequestException as exc:
-    raise RuntimeError(
-        f"Failed to fetch {model_name.upper()} forecast: {exc}"
-    ) from exc
+        response = requests.get(
+            config["url"],
+            params=params,
+            timeout=30,
+        )
+
+        response.raise_for_status()
+
+    except requests.RequestException as exc:
+        raise RuntimeError(
+            f"Failed to fetch {model_name.upper()} forecast: {exc}"
+        ) from exc
+
+    # --------------------------------------------------
+    # Parse response
+    # --------------------------------------------------
 
     data = response.json()
 
     if "hourly" not in data:
-    raise RuntimeError(
-        f"{model_name.upper()} response does not contain hourly forecast data."
-    )
-
-hourly = data["hourly"]
-
-required_fields = [
-    "time",
-    "precipitation",
-    "temperature_2m",
-]
-
-missing_fields = [
-    field
-    for field in required_fields
-    if field not in hourly
-]
-
-if missing_fields:
-    raise RuntimeError(
-        f"{model_name.upper()} response is missing fields: {missing_fields}"
-    )
+        raise RuntimeError(
+            f"{model_name.upper()} response does not contain "
+            "hourly forecast data."
+        )
 
     hourly = data["hourly"]
+
+    # --------------------------------------------------
+    # Validate required fields
+    # --------------------------------------------------
+
+    required_fields = [
+        "time",
+        "precipitation",
+        "temperature_2m",
+    ]
+
+    missing_fields = [
+        field
+        for field in required_fields
+        if field not in hourly
+    ]
+
+    if missing_fields:
+        raise RuntimeError(
+            f"{model_name.upper()} response is missing "
+            f"fields: {missing_fields}"
+        )
+
+    # --------------------------------------------------
+    # Convert to DataFrame
+    # --------------------------------------------------
 
     return pd.DataFrame({
         "time": hourly["time"],
@@ -121,16 +134,14 @@ def fetch_all_models(
 ):
     """
     Fetch forecasts from all four forecasting systems
-    and align them on their common hourly timestamps.
+    and align them on common hourly timestamps.
     """
 
     model_data = []
 
     for model_name in MODEL_CONFIGS:
 
-        print(
-            f"Fetching {model_name.upper()}..."
-        )
+        print(f"Fetching {model_name.upper()}...")
 
         df = fetch_model_forecast(
             model_name,
@@ -153,15 +164,23 @@ def fetch_all_models(
             how="inner",
         )
 
-    if combined.empty:
-    raise RuntimeError(
-        "No common timestamps were available across all models."
-    )
+    # --------------------------------------------------
+    # Validate combined data
+    # --------------------------------------------------
 
-if combined.isna().any().any():
-    raise RuntimeError(
-        "Combined forecast contains missing values."
-    )
+    if combined.empty:
+        raise RuntimeError(
+            "No common timestamps were available across all models."
+        )
+
+    if combined.isna().any().any():
+        raise RuntimeError(
+            "Combined forecast contains missing values."
+        )
+
+    # --------------------------------------------------
+    # Sort by time
+    # --------------------------------------------------
 
     combined["time"] = pd.to_datetime(
         combined["time"]
@@ -195,9 +214,7 @@ if __name__ == "__main__":
     print("LIVE FORECAST DATA")
     print("=" * 70)
 
-    print(
-        f"\nRows: {len(forecast)}"
-    )
+    print(f"\nRows: {len(forecast)}")
 
     print(
         f"Time range: "
