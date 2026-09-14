@@ -1,7 +1,7 @@
+#backend/blending/equal_weight.py
 import pandas as pd
 from pathlib import Path
 from sklearn.metrics import mean_absolute_error, mean_squared_error
-
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 DATA_FILE = BASE_DIR / "data" / "processed" / "training_dataset.csv"
