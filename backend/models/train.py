@@ -382,3 +382,4 @@ def train_precipitation_model():
 
 if __name__ == "__main__":
     train_temperature_models()
+    train_precipitation_model()
