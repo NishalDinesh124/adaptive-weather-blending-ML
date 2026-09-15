@@ -1203,3 +1203,235 @@ nav { padding: 0 8px; }
 
   .metric-explanation > div + div { border-left: none; border-top: 1px solid var(--sep); }
 }
+
+/* ================================
+   RISK MAP
+================================ */
+
+.risk-map-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+
+.risk-map-header h2 {
+  margin: 7px 0 6px;
+  font-size: 24px;
+}
+
+.risk-map-header p {
+  margin: 0;
+  color: var(--l3);
+}
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--l2);
+}
+
+.risk-map-status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 12px;
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  border-radius: 20px;
+  color: #22c55e;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.risk-map-container {
+  position: relative;
+  height: 430px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(59, 130, 246, 0.10),
+      transparent 35%
+    ),
+    linear-gradient(
+      rgba(255, 255, 255, 0.025) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.025) 1px,
+      transparent 1px
+    ),
+    #151515;
+  background-size:
+    auto,
+    40px 40px,
+    40px 40px;
+}
+
+.risk-map-container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      circle at 50% 50%,
+      transparent 0,
+      transparent 80px,
+      rgba(59, 130, 246, 0.06) 81px,
+      transparent 82px
+    );
+}
+
+.risk-map-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  z-index: 2;
+}
+
+.location-marker {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.5);
+  color: #22c55e;
+  box-shadow:
+    0 0 0 10px rgba(34, 197, 94, 0.04),
+    0 0 35px rgba(34, 197, 94, 0.15);
+}
+
+.risk-map-center strong {
+  font-size: 16px;
+}
+
+.risk-map-center span {
+  color: var(--l3);
+  font-size: 12px;
+}
+
+/* Risk summary */
+
+.risk-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.risk-summary-card {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 17px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+}
+
+.risk-summary-card svg {
+  flex-shrink: 0;
+}
+
+.risk-summary-card div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.risk-summary-card div span {
+  color: var(--l3);
+  font-size: 12px;
+}
+
+.risk-summary-card div strong {
+  font-size: 16px;
+}
+
+.risk-summary-card > b {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+/* Risk states */
+
+.risk-summary-card.low {
+  border-color: rgba(34, 197, 94, 0.25);
+}
+
+.risk-summary-card.low svg,
+.risk-summary-card.low > b {
+  color: #22c55e;
+}
+
+.risk-summary-card.moderate {
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.risk-summary-card.moderate svg,
+.risk-summary-card.moderate > b {
+  color: #f59e0b;
+}
+
+.risk-summary-card.high {
+  border-color: rgba(239, 68, 68, 0.35);
+}
+
+.risk-summary-card.high svg,
+.risk-summary-card.high > b {
+  color: #ef4444;
+}
+
+/* Assessment */
+
+.risk-map-assessment {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 16px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+}
+
+.risk-map-assessment svg {
+  color: #f59e0b;
+  flex-shrink: 0;
+}
+
+.risk-map-assessment strong {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.risk-map-assessment p {
+  margin: 0;
+  color: var(--l3);
+  font-size: 13px;
+}
+
+/* Responsive */
+
+@media (max-width: 900px) {
+  .risk-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .risk-map-container {
+    height: 350px;
+  }
+}

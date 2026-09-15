@@ -14,40 +14,44 @@ function Overview() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-  fetch(`${import.meta.env.VITE_API_URL}/forecast`)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Failed to fetch forecast");
-      }
+    fetch(`${import.meta.env.VITE_API_URL}/forecast`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch forecast");
+        }
 
-      return response.json();
-    })
-    .then((data) => {
-      setForecast(data);
-      setLoading(false);
-    })
-    .catch((err) => {
-      console.error(err);
-      setError("Unable to load live forecast");
-      setLoading(false);
-    });
-}, []);
+        return response.json();
+      })
+      .then((data) => {
+        setForecast(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setError("Unable to load live forecast");
+        setLoading(false);
+      });
+  }, []);
 
   const firstForecast = forecast?.forecast?.[0];
 
   return (
     <>
       <section className="hero-grid">
-        <WeatherCard />
-        <AlertsCard />
+        <WeatherCard
+  forecast={forecast}
+  loading={loading}
+  error={error}
+/>
+
+        <AlertsCard forecast={forecast} loading={loading} error={error} />
       </section>
 
       <section className="dashboard-grid">
-        <RiskMapPreview />
+        <RiskMapPreview forecast={forecast} />
 
         <Card title="AI Blended Forecast">
           <div className="forecast-grid">
-
             <Metric
               icon={CloudRain}
               label="Precipitation"
@@ -77,18 +81,18 @@ function Overview() {
             <Metric
               icon={Wind}
               label="Wind"
-              value="--"
+              value={
+                loading
+                  ? "Loading..."
+                  : error
+                    ? "--"
+                    : `${firstForecast.wind.maximum.toFixed(1)} km/h`
+              }
               confidence="Live"
             />
-
           </div>
 
-          {error && (
-            <p className="error-message">
-              {error}
-            </p>
-          )}
-
+          {error && <p className="error-message">{error}</p>}
         </Card>
       </section>
     </>

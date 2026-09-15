@@ -181,6 +181,34 @@ def generate_hybrid_forecast(
                 ),
             },
         }
+        wind = {
+            "sources": {
+                "ifs": float(
+                    forecasts["ifs_wind"].iloc[i]
+                ),
+
+                "gfs": float(
+                    forecasts["gfs_wind"].iloc[i]
+                ),
+
+                "aifs": float(
+                    forecasts["aifs_wind"].iloc[i]
+                ),
+
+                "hgefs": float(
+                    forecasts["hgefs_wind"].iloc[i]
+                ),
+            },
+
+            "maximum": float(
+                max(
+                    forecasts["ifs_wind"].iloc[i],
+                    forecasts["gfs_wind"].iloc[i],
+                    forecasts["aifs_wind"].iloc[i],
+                    forecasts["hgefs_wind"].iloc[i],
+                )
+            ),
+        }
 
         forecast_output.append({
             "time": str(
@@ -190,6 +218,8 @@ def generate_hybrid_forecast(
             "temperature": temperature,
 
             "precipitation": precipitation,
+
+            "wind": wind,
         })
 
     # --------------------------------------------------
