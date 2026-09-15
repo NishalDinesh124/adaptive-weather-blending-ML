@@ -4,7 +4,7 @@ import { CloudRain, Thermometer, Wind } from "lucide-react";
 import Card from "../components/common/Card";
 import Metric from "../components/common/Metric";
 
-import WeatherCard from "../components/overview/Weathercard";
+import WeatherCard from "../components/overview/WeatherCard";
 import AlertsCard from "../components/overview/AlertsCard";
 import RiskMapPreview from "../components/overview/RiskMapPreview";
 
