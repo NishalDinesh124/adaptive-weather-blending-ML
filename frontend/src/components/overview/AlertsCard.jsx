@@ -85,4 +85,4 @@ function AlertsCard({ forecast, loading, error }) {
   );
 }
 
-export default AlertsCard;
+export default AlertsCard
