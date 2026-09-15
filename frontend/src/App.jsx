@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Zap, ShieldAlert } from "lucide-react";
 
 import Sidebar from "./components/layout/Sidebar";
-import Topbar from "./components/layout/TopBar";
+import Topbar from "./components/layout/Topbar";
 
 import Overview from "./pages/Overview";
 import RiskMap from "./pages/RiskMap";
