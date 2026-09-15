@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useWeather } from "../context/WeatherContext";
 import {
   Map,
   CloudRain,
@@ -6,8 +6,6 @@ import {
   Thermometer,
   AlertTriangle,
 } from "lucide-react";
-
-const API_URL = import.meta.env.VITE_API_URL;
 
 const RAIN_THRESHOLD = 40;
 const WIND_THRESHOLD = 40;
@@ -20,26 +18,7 @@ function getRisk(value, threshold) {
 }
 
 function RiskMap() {
-  const [forecast, setForecast] = useState(null);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    fetch(`${API_URL}/forecast`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to fetch forecast");
-        }
-
-        return response.json();
-      })
-      .then((data) => {
-        setForecast(data);
-      })
-      .catch((err) => {
-        console.error(err);
-        setError("Unable to load live risk data");
-      });
-  }, []);
+ const { forecast, loading, error } = useWeather();
 
   if (error) {
     return (
@@ -51,7 +30,7 @@ function RiskMap() {
     );
   }
 
-  if (!forecast) {
+  if (loading || !forecast) {
     return (
       <div className="placeholder">
         <Map size={48} />

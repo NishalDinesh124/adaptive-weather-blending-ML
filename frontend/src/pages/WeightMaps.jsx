@@ -1,8 +1,6 @@
-import { useEffect, useState } from "react";
+import { useWeather } from "../context/WeatherContext";
 import { Map, Layers, Info } from "lucide-react";
 import Card from "../components/common/Card";
-
-const API_URL = import.meta.env.VITE_API_URL;
 
 const models = [
   {
@@ -32,26 +30,7 @@ const models = [
 ];
 
 function WeightMaps() {
-  const [forecast, setForecast] = useState(null);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    fetch(`${API_URL}/forecast`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to fetch forecast");
-        }
-
-        return response.json();
-      })
-      .then((data) => {
-        setForecast(data);
-      })
-      .catch((err) => {
-        console.error(err);
-        setError("Unable to load live model weights");
-      });
-  }, []);
+  const { forecast, loading, error } = useWeather();
 
   if (error) {
     return (
@@ -63,7 +42,7 @@ function WeightMaps() {
     );
   }
 
-  if (!forecast) {
+  if (loading || !forecast) {
     return (
       <div className="page">
         <Card title="Current Weight Distribution">

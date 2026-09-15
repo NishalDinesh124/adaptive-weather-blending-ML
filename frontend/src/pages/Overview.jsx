@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useWeather } from "../context/WeatherContext";
 import { CloudRain, Thermometer, Wind } from "lucide-react";
 
 import Card from "../components/common/Card";
@@ -9,29 +9,7 @@ import AlertsCard from "../components/overview/AlertsCard";
 import RiskMapPreview from "../components/overview/RiskMapPreview";
 
 function Overview() {
-  const [forecast, setForecast] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/forecast`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to fetch forecast");
-        }
-
-        return response.json();
-      })
-      .then((data) => {
-        setForecast(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setError("Unable to load live forecast");
-        setLoading(false);
-      });
-  }, []);
+  const { forecast, loading, error } = useWeather();
 
   const firstForecast = forecast?.forecast?.[0];
 

@@ -1,8 +1,6 @@
-import { useEffect, useState } from "react";
+import { usePerformance } from "../context/PerformanceContext";
 import { TrendingDown, Thermometer, CloudRain } from "lucide-react";
 import Card from "../components/common/Card";
-
-const API_URL = import.meta.env.VITE_API_URL;
 
 function ScoreBadge({ value, isBest }) {
   if (value === undefined || value === null) {
@@ -59,26 +57,11 @@ function ModelList({ data, metric }) {
 }
 
 function ModelPerformance() {
-  const [performance, setPerformance] = useState(null);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    fetch(`${API_URL}/performance`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to fetch performance");
-        }
-
-        return response.json();
-      })
-      .then((data) => {
-        setPerformance(data);
-      })
-      .catch((err) => {
-        console.error(err);
-        setError("Unable to load performance data");
-      });
-  }, []);
+  const {
+  performance,
+  loading,
+  error,
+} = usePerformance();
 
   if (error) {
     return (
@@ -90,7 +73,7 @@ function ModelPerformance() {
     );
   }
 
-  if (!performance) {
+  if (loading || !performance) {
     return (
       <div className="page">
         <Card title="Model Performance">

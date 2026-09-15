@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useWeather } from "../context/WeatherContext";
 import {
   AlertTriangle,
   CloudRain,
@@ -7,8 +7,6 @@ import {
 } from "lucide-react";
 
 import Card from "../components/common/Card";
-
-const API_URL = import.meta.env.VITE_API_URL;
 
 const RAIN_THRESHOLD = 40;
 const WIND_THRESHOLD = 40;
@@ -37,26 +35,7 @@ function levelClass(level) {
 }
 
 function ExtremeWeather() {
-  const [forecast, setForecast] = useState(null);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    fetch(`${API_URL}/forecast`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to fetch forecast");
-        }
-
-        return response.json();
-      })
-      .then((data) => {
-        setForecast(data);
-      })
-      .catch((err) => {
-        console.error(err);
-        setError("Unable to load live weather assessment");
-      });
-  }, []);
+  const { forecast, loading, error } = useWeather();
 
   if (error) {
     return (
@@ -68,7 +47,7 @@ function ExtremeWeather() {
     );
   }
 
-  if (!forecast) {
+  if (loading || !forecast) {
     return (
       <div className="page">
         <Card title="Extreme Weather Assessment">

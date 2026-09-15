@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useWeather } from "../context/WeatherContext";
 import { Brain, CloudRain, Thermometer, Zap } from "lucide-react";
 import Card from "../components/common/Card";
 
-const API_URL = import.meta.env.VITE_API_URL;
+
 
 const models = [
   {
@@ -36,29 +36,7 @@ const models = [
 ];
 
 function ForecastFusion() {
-  const [forecast, setForecast] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    fetch(`${API_URL}/forecast`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to fetch forecast");
-        }
-
-        return response.json();
-      })
-      .then((data) => {
-        setForecast(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setError("Unable to load live forecast");
-        setLoading(false);
-      });
-  }, []);
+  const { forecast, loading, error } = useWeather();
 
   const current = forecast?.forecast?.[0];
 
